@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-// import { compose } from 'redux';
-// import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { connect } from 'react-redux';
 import { firebaseConnect } from 'react-redux-firebase';
 import Spinner from '../layouts/Spinner.js';
 import classnames from 'classnames';
+import { notifyUser } from '../../actions/notifyActions';
+import Alert from '../layouts/Alert';
+
 
 
 class Login extends Component {
@@ -16,14 +19,15 @@ class Login extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        const { firebase } = this.props;
+        const { firebase, notifyUser } = this.props;
         const { email, password } = this.state;
         firebase.login({ email, password })
             .then(() => console.log('logged in'))
-            .catch(err => alert('Invalid Login credentials'))
+            .catch(err => notifyUser('Invalid Login credentials', 'error'))
     }
 
     render() {
+        const { message, messageType } = this.props.notify;
         return (
             <div>
                 <header className="hero is-primary is-small">
@@ -35,6 +39,7 @@ class Login extends Component {
                 </header>
                 <main className="container" style={{ margin: '20px' }}>
                     <form onSubmit={this.onSubmit} action="" style={{ padding: '10px' }} className="block">
+                        {message && <Alert message={message} messageType={messageType} />}
                         <div className="field">
                             <label htmlFor="email" className="label">Email</label>
                             <input
@@ -68,8 +73,13 @@ class Login extends Component {
     }
 }
 
-Login.PropTypes = {
+Login.propTypes = {
     firebase: PropTypes.object.isRequired
 }
 
-export default firebaseConnect()(Login)
+export default compose(
+    firebaseConnect(),
+    connect((state, props) => ({
+        notify: state.notify
+    }), { notifyUser })
+)(Login)
