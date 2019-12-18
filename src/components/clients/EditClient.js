@@ -9,6 +9,32 @@ import classnames from 'classnames';
 
 
 class EditClient extends Component {
+    constructor(props) {
+        super(props);
+        // Create refs
+        this.firstNameInput = React.createRef();
+        this.lastNameInput = React.createRef();
+        this.emailInput = React.createRef();
+        this.phoneInput = React.createRef();
+        this.balanceInput = React.createRef();
+    }
+
+    onSubmit = e => {
+        e.preventDefault();
+        const { client, firestore, history } = this.props;
+        // Construct the updated client 
+        const updClient = {
+            firstName: this.firstNameInput.current.value,
+            lastName: this.lastNameInput.current.value,
+            email: this.emailInput.current.value,
+            phone: this.phoneInput.current.value,
+            balance: this.balanceInput.current.value === '' ? 0 : this.balanceInput.current.value
+        }
+        // Update client in firestore
+        firestore.update({ collection: 'clients', doc: client.id }, updClient)
+            .then(history.push('/'));
+    }
+
     render() {
         const { client } = this.props;
         if (client) {
@@ -37,8 +63,8 @@ class EditClient extends Component {
                                         className="input"
                                         minLength="2"
                                         required
-                                        onChange={this.onChange}
-                                        value={this.state.firstName}
+                                        ref={this.firstNameInput}
+                                        defaultValue={client.firstName}
                                     />
                                 </div>
                                 <div className="field">
@@ -49,8 +75,8 @@ class EditClient extends Component {
                                         className="input"
                                         minLength="2"
                                         required
-                                        onChange={this.onChange}
-                                        value={this.state.lastName}
+                                        ref={this.lastNameInput}
+                                        defaultValue={client.lastName}
                                     />
                                 </div>
                                 <div className="field">
@@ -60,8 +86,8 @@ class EditClient extends Component {
                                         name="email"
                                         className="input"
                                         required
-                                        onChange={this.onChange}
-                                        value={this.state.email}
+                                        ref={this.emailInput}
+                                        defaultValue={client.email}
                                     />
                                 </div>
                                 <div className="field">
@@ -72,8 +98,8 @@ class EditClient extends Component {
                                         className="input"
                                         minLength="10"
                                         required
-                                        onChange={this.onChange}
-                                        value={this.state.phone}
+                                        ref={this.phoneInput}
+                                        defaultValue={client.phone}
                                     />
                                 </div>
                                 <div className="field">
@@ -82,8 +108,8 @@ class EditClient extends Component {
                                         type="text"
                                         name="balance"
                                         className="input"
-                                        onChange={this.onChange}
-                                        value={this.state.balance}
+                                        ref={this.balanceInput}
+                                        defaultValue={client.balance}
                                     />
                                 </div>
                                 <button className="button is-primary" type="submit">Submit</button>
