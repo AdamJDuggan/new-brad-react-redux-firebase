@@ -79,7 +79,7 @@ class AddClient extends Component {
                                 />
                             </div>
                             <div className="field">
-                                <label htmlFor="phone" className="label">Last Name</label>
+                                <label htmlFor="phone" className="label">Phone</label>
                                 <input
                                     type="text"
                                     name="phone"

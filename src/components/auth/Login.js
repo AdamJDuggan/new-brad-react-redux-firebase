@@ -9,7 +9,6 @@ import { notifyUser } from '../../actions/notifyActions';
 import Alert from '../layouts/Alert';
 
 
-
 class Login extends Component {
     state = { email: '', password: '' }
 
